@@ -1,16 +1,19 @@
-# This is a sample Python script.
+import fitz
+import pytesseract
+from PIL import Image
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
-
-
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+# read pdf file
+pdf = fitz.open('eXuler.pdf')
+# iterate through pdf pages
+for page in range(0, len(pdf)):
+    # load pages with index
+    pages = pdf.loadPage(page)
+    # take image of page
+    img = pages.getPixmap()
+    # save image
+    img.writeImage(f'image{page + 1}.png')
+    openImg = Image.open(f'image{page + 1}.png')
+    text = pytesseract.image_to_string(openImg)
+    print(text)
